@@ -1,37 +1,37 @@
 ---
-layout: default
-title: Security
-parent: Porting guide
-nav_order: 1000
-redirect_from:
-  - /security.html
-  - /security/
+
+
+layout: default title: Security parent: Porting guide nav\_order: 1000 redirect\_from:
+
+- /security.html
+- /security/
+
 ---
 
-# Vial security notes
 
-In order to prevent a malicious host computer from unknowingly changing sensitive firmware settings (including changing macros or flashing a different firmware), Vial implements an optional set of security features:
+# Vial安全信息
 
-* By default, a keyboard is booted in Locked mode
-* In order to put the keyboard into Unlocked mode, an action is performed that requires interactive input from the user
-  * First, an unlock request is sent to the keyboard through the rawhid endpoint
-  * Once the unlock request is received, the keyboard kills all input handling; this is done so that the user has a chance to react if a malicious program unknowingly request unlock mode
-  * The user has to hold specific keys for several seconds:
-![](../img/security-user-prompt.png)
-* Once the keyboard is unlocked, all of the security-sensitive actions are allowed (change macro, reset to bootloader, etc)
-* The keyboard can be re-locked either by restarting or manually selecting the "Lock" action from the menu
+为了防止恶意的主机在用户不知情的情况下改变敏感的固件设置（包括改变宏或刷入不同的固件），Vial实现了一套可选的安全功能。
 
-Note that for the purposes of Vial security model we assume the computer is trusted the moment you unlock the keyboard. I.e., once the keyboard is unlocked, it is not possible to protect against malware running on the computer replacing the keyboard firmware in between of you selecting it in the flasher and actually flashing. The goal is to ensure that the firmware cannot be *unknowingly* flashed by a malicious computer.
+* 默认情况下，键盘是以锁定状态启动的
+* 想要解锁键盘，需要执行一个需要用户互动输入的动作
+  * 首先，通过rawhid端点向键盘发送一个解锁请求。
+  * 一旦收到解锁请求，键盘就会停止所有的输入处理；这样做是为了恶意程序在用户不知情的情况下请求解锁模式时有机会做出反应
+  * 用户必须按住特定的键几秒钟：![](../img/security-user-prompt.png)
+* 一旦键盘被解锁，所有安全敏感操作都被允许（改变宏，重置到引导程序等）。
+* 键盘可以通过重新启动或从菜单中手动点击"Lock"(锁定)按钮来重新锁定。
 
-For instance, you might use the same keyboard on both your home and work computer and perhaps you don't trust the work computer due to it being loaded with monitoring spyware; therefore, you should not perform the unlock action there.
+请注意，Vial假定计算机在你解锁键盘的那一刻就是安全的。也就是说，一旦键盘被解锁，就不可能保护计算机上运行的恶意软件在你刷写键盘固件的时候掉包键盘固件。我们的目标是确保固件不能在*不知**情*的情况下被恶意的计算机刷写固件。
+
+例如，你可能在你的家庭和工作电脑上使用同一把键盘，也许你不信任工作电脑，因为它被加载了监控间谍软件；因此，你不应该在那里执行解锁操作。
 
 ## `VIAL_INSECURE = yes`
 
-This option, when added to rules.mk, will disable Vial security features, treating the board as it is always unlocked.
+当这个选项被添加到rules.mk中时，将禁用Vial的安全功能，将棋盘视为一直处于解锁状态。
 
-## List of protected security-sensitive features
+## 受保护的安全敏感功能列表
 
-* `id_switch_matrix_state` (sort of a keylogger): always disabled, even when using `VIAL_INSECURE`
-* `id_dynamic_keymap_macro_set_buffer` (changing a macro): disabled when locked
-* `id_bootloader_jump` (reset to bootloader): disabled when locked
-* Assigning the RESET keycode is not allowed when the board is locked
+* `id_switch_matrix_state`(类似于键盘记录器): 总是禁用，即使是在使用`VIAL_INSECURE`时。
+* `id_dynamic_keymap_macro_set_buffer`(改变一个宏): 锁定时禁用
+* `id_bootloader_jump`(重置到引导程序）：锁定时禁用。
+* 当电路板被锁定时，不允许分配RESET键码。

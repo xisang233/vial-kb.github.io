@@ -1,47 +1,44 @@
 ---
-layout: default
-title: First time use
-parent: User manual
-nav_order: 1
-redirect_from:
-  - /gettingStarted/first-use.html
-  - /getting-started/first-use.html
+
+
+layout: default title: First time use parent: User manual nav\_order: 1 redirect\_from:
+
+- /gettingStarted/first-use.html
+- /getting-started/first-use.html
+
 ---
 
 
-# First time use
+# 首次使用
 
-> Important
-> {: .label .label-red }
-> If you are looking to understand how to build support for a keyboard head to the [Porting guide](/docs/) section of the docs.
+> 重要 {: .label .labelred } 如果你想了解如何移植vial到你自己的键盘，请前往文档中的[移植指南](/docs/)部分。
 
-## 1. Download Vial
+## 1\.下载 Vial
 
-Hop over to the [download](/download) page to make sure you have the latest build.
+跳转到[下载页面](/download)。请确保你拥有最新的版本。
 
-## 2. Run Vial
+## 2\.运行Vial
 
 ### Linux
 
-Make sure that your downloaded file can be executed.
-You can either do this through your graphical file explorer or use the following command:
+确保你的下载文件设置了执行权限。你可以通过你的图形文件资源管理器或使用下面的命令来做到这一点：
 
 ```bash
 chmod +x ~/Downloads/Vial*.AppImage
 ```
 
-After that simply launch the application by either double clicking on it or executing the following command:
+之后，只需通过双击它或执行以下命令来启动该应用程序：
 
 ```bash
 ~/Downloads/Vial*.AppImage
 ```
 
-If you discover any bugs please [raise an issue](https://github.com/vial-kb/vial-gui/issues/new/choose).
+如果你发现任何错误，请[提出一个issue](https://github.com/vial-kb/vial-gui/issues/new/choose)。
 
-## 3. Program your new keyboard
+## 3\.为你的新键盘设置按键
 
-Using Vial is extremely simple, just click on a key you would like to change the value of in the top palette then select your replacement key or macro in the bottom palette.
+使用Vial非常简单，只需在顶部面板上点击一个你想改变键码的按键，然后在底部面板上选择你想要使用的键或宏。
 
-Your new key will be automatically saved onto the keyboard and immediately ready for use.
+你的新键将被自动保存在键盘上，并立即可以使用。
 
 ![](../img/vial-linux.png)

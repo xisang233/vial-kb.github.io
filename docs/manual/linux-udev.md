@@ -1,109 +1,109 @@
 ---
-layout: default
-title: Configuring udev on Linux
-parent: User manual
-nav_order: 6
-has_toc: true
-redirect_from:
-  - /getting-started/linux-udev.html
+
+
+layout: default title: Configuring udev on Linux parent: User manual nav\_order: 6 has\_toc: true redirect\_from:
+
+- /getting-started/linux-udev.html
+
 ---
 
-# Configuring `udev` rules for VIA and Vial on Linux
 
-In order for your keyboard to be detected by the VIA and Vial apps on Linux, you need to set up a custom `udev` rule. Both use the `hidraw` linux driver to directly communicate configurations to your keyboard. In most situations it should be safe to use a generalized `udev` rule for all `hidraw` devices, but in other cases where you prefer or are required to restrict access on a device basis, it is possible to create a `udev` rule [specifically for your keyboard](#device-specific-udev-rules).
+# 为Linux上的VIA和Vial配置`udev`规则
 
-Vial has a magic number that is inserted into the USB serial attribute, so you will only need one rule for all Vial keyboards that will be safe to use in conjunction with other `hidraw` device rules.
+为了让你的键盘被Linux上的VIA和Vial应用程序检测到，你需要设置一个自定义`udev`规则。两者都使用`hidraw`linux驱动来直接与你的键盘进行配置通信。在大多数情况下，对所有`hidraw`设备使用通用`udev`规则应该是安全的，但在其他情况下，如果你喜欢或需要在设备基础上限制访问，可以[为你的键盘专门创建一个](#device-specific-udev-rules)`udev`规则。
 
-The following guides will show you how to implement these `udev` rules. You will require root access to create the files that are necessary.
+Vial有一个插入USB串行属性的神奇数字，所以你只需要为所有Vial键盘制定一个规则，与其他`hidraw`设备规则一起使用会很安全。
 
-## Universal Vial `udev` rule
+下面的指南将告诉你如何实现这些`udev`规则。你将需要root权限来创建必要的文件。
 
-For a universal access rule for any device with Vial firmware, run this in your shell while logged in as your user (this will only work with `sudo` installed):
+## 通用Vial`udev`规则
+
+对于任何带有Vial固件的设备的通用访问规则。在你的shell中以你的用户身份登录时运行这个命令（仅在安装了`sudo`的系统下可用）：
 
 ```
 export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{serial}==\"*vial:f64c2b3c*\", MODE=\"0660\", GROUP=\"$USER_GID\", TAG+=\"uaccess\", TAG+=\"udev-acl\"" > /etc/udev/rules.d/99-vial.rules && udevadm control --reload && udevadm trigger'
 ```
 
-This command will automatically create a `udev` rule and reload the `udev` system.
+该命令将自动创建一个`udev`规则并重新加载`udev`系统。
 
-### Manually
+### 手动操作
 
-Write this text to `/etc/udev/rules.d/99-vial.rules` in a text editor:
+使用文本编辑器打开 `/etc/udev/rules.d/99-vial.rules` 并加入下列内容：
 
 ```
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{serial}=="*vial:f64c2b3c*", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
 ```
 
-You can replace the group with any that you require on your operating system, but the `users` group should work on most distributions of Linux.
+你可以在你的操作系统上用任何你需要的组合来代替，但`users`组应当在大多数Linux发行版上可用。
 
-In order for the rule to take effect, you must [reload `udev`](#reloading-udev).
+为了使规则生效，你必须[重新加载`udev`](#reloading-udev).
 
-## Generalized VIA `udev` rule
+## 通用的VIA`udev`规则
 
-On a kernel level, there is no way to detect if a keyboard is compatible with VIA, so you have to allow access to all `hidraw` devices. If you require more device security, you are able to configure access on a [device-specific basis](#device-specific-udev-rules).
+在内核层面上，没有办法检测键盘是否与VIA兼容，所以你必须允许对所有设备`hidraw`的访问。如果你希望硬件更加安全，你可以设置并[允许特定设备访问](#device-specific-udev-rules)。
 
-For a rule that allows users to access all `hidraw` devices, run this in your shell while logged in as your user (this will only work with `sudo` installed):
+对于允许用户访问所有`hidraw`设备的规则，在你的shell中以你的用户身份登录时运行这个命令（仅在安装了 `sudo` 的系统下可用）：
 
 ```
 export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", MODE=\"0660\", GROUP=\"$USER_GID\", TAG+=\"uaccess\", TAG+=\"udev-acl\"" > /etc/udev/rules.d/92-viia.rules && udevadm control --reload && udevadm trigger' 
 ```
 
-This command will automatically create a `udev` rule and reload the `udev` system.
+该命令将自动创建一个`udev`规则并重新加载`udev`系统。
 
-### Manually
+### 手动操作
 
-Write this text to `/etc/udev/rules.d/92-viia.rules` in a text editor:
+使用文本编辑器打开`/etc/udev/rules.d/92-viia.rules`并加入下列内容：
 
 ```
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
 ```
 
-You can replace the group with any that you require on your operating system, but the `users` group should work on most distributions of Linux.
+你可以在你的操作系统上用任何你需要的组合来代替，但`users`组应当在大多数Linux发行版上可用。
 
-In order for the rule to take effect, you must [reload `udev`](#reloading-udev).
+为了使规则生效，你必须[重新加载`udev`](#reloading-udev).
 
-## Device-specific `udev` rules
+## 特定设备的`udev`规则
 
-### Finding the vendor and product IDs
+### 寻找供应商和产品ID
 
-Configuring device specific `udev` rules will require knowing the USB vendor and product IDs of your keyboard. The easiest way to find them is using the `lsusb` command. Most major Linux distributions include `lsusb`, but you may need to install it. `lsusb` will list information about all of your connected USB devices. Here is a sample output for the Keychron Q2 Revision 0110:
+配置特定设备`udev`规则需要你事先知道键盘的USB Vendor ID(供应商ID)和Product ID(产品ID)。找到它们的最简单方法是使用`lsusb`命令。大多数主要的Linux发行版预装`lsusb`，但你可能需要手动安装它。`lsusb`将列出你所有连接的USB设备的信息。下面是Keychron Q2 Revision 0110的输出示例。
 
 ```
 Bus 001 Device 049: ID 3434:0110 Keychron Keychron Q2
 ```
 
-The first four hex numbers next to `ID` is the vendor ID, and the next four hex numbers after the colon is the product ID. In this case, the Keychron Q2's vendor ID is `3434` and it's product ID is `0110`.
+`ID`旁边的前四个十六进制数字是供应商ID，冒号后面的四个十六进制数字是产品ID。在这种情况下，Keychron Q2的供应商ID是`3434`，它的产品ID是`0110`。
 
-#### Where is my keyboard in `lsusb`?
+#### 我的键盘在`lsusb`的哪里？
 
-Depending on your keyboard, the device name may be missing, or may not be the name of your keyboard at all. This is due to the fact that a majority of QMK compatible keyboards are not made by major companies with vendor IDs registered with the USB-IF. As a result, the IDs are sometimes set to arbitrary or unofficial values, or use the IDs supplied by the microcontroller's USB interface.
+部分键盘的设备名称可能会丢失，或者根本就不是你的键盘的名称。这是由于大多数QMK兼容键盘不是由在USBIF注册了供应商ID的大公司制造的。因此，ID有时被设置为任意的或非官方的值，或者使用微控制器的USB接口提供的ID。
 
-To find out which device is your keyboard, run `lsusb` with your keyboard plugged in and then run it again while disconnected. You should be able to find the different device between the two outputs.
+要想知道哪个设备是你的键盘，在你的键盘插上电源的情况下运行`lsusb`，然后在断开电源的情况下再次运行。对比两次的输出，即可找到键盘。
 
-### Creating the `udev` rule
+### 创建`udev`规则
 
-To create a rule for your specific keyboard, use this template:
+要为您的特定键盘创建一个规则，请使用此模板。
 
 ```
 # Name of your keyboard
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="XXXX", ATTRS{idProduct}=="XXXX", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
 ```
 
-Replace the vendor and product ID with the ones you found for your keyboard using [lsusb](#finding-the-vendor-and-product-ids). You may also specify a different group if required. Write this rule to `/etc/udev/rules.d/99-vial.rules` as root. In order for the rule to take effect, you must [reload `udev`](#reloading-udev).
+找到的键盘的供应商和产品ID，用[lsusb](#finding-the-vendor-and-product-ids)替换。如果需要，你也可以指定一个不同的组。用root身份把这个规则写到`/etc/udev/rules.d/99-vial.rules`文件下。为了使规则生效，你必须[重新加载`udev`](#reloading-udev).
 
-The following is an example `udev` rule for the Keychron Q2:
+下面是Keychron Q2的一个`udev`规则示例。
 
 ```
 # Keychron Q2
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0110", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
 ```
 
-## Reloading `udev`
+## 重新加载`udev`
 
-In order for your new `udev` rules to take effect, you must reload the `udev` rules. The standard way to do this is to run the following command as root:
+为了让你的新`udev`规则生效，你必须重新加载`udev`规则。这样做的标准方法是以root身份运行以下命令：
 
 ```
 udevadm control --reload-rules && udevadm trigger
 ```
 
-If this command doesn't work, or it's not available, check that you are root or using a privilege escalation tool like `sudo`, and make sure to read your distribution's handbook/manual.
+如果这个命令不起作用，或者它不可用，请检查你是否以root身份操作或使用了权限升级工具，如`sudo` ，并阅读你的键盘制造商的手册。

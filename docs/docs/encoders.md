@@ -1,46 +1,51 @@
 ---
-layout: default
-title: Rotary encoder support
-parent: Porting guide
-nav_order: 4
-redirect_from:
-  - /gettingStarted/encoders.html
-  - /getting-started/encoders.html
+
+
+layout: default title: Rotary encoder support parent: Porting guide nav\_order: 4 redirect\_from:
+
+- /gettingStarted/encoders.html
+- /getting-started/encoders.html
+
 ---
 
 
-# Rotary encoders
+# 旋转编码器
 
-Vial implements optional GUI configuration for rotary encoders. This allows users to set up  separate keycode actions for clockwise and counterclockwise encoder rotations. Encoders fully support QMK layers, so different keycodes can be used for different layers.
+Vial实现了旋转编码器的可选GUI配置。这允许用户为编码器的顺时针和逆时针旋转设置单独的键码动作。编码器完全支持QMK层操作，所以在不同的层可以设置不同的键码。
 
-You will need to port your keyboard over to Vial before encoders are supported. Follow [Step 1](/porting-to-via.md) and [Step 2](/porting-to-vial.md) to get started.
+想要让vial支持编码器，你需要将你的键盘移植到Vial。请按照[步骤1](/porting-to-via.md)和[步骤2](/porting-to-vial.md)开始操作。
 
-In order to enable encoder support in your firmware, follow these steps:
+为了在您的固件中启用编码器支持，请遵循以下步骤。
 
-## 1. Add basic QMK support for encoders
+## 1\.为编码器添加基本的QMK支持
 
-Add this to your main `rules.mk`:
+将此添加到你的主`rules.mk`中。
 
 ```make
 ENCODER_ENABLE = yes
 ```
-Configure the encoder pins in `config.h`:
+
+在`config.h`中配置编码器对应的引脚。
 
 ```c
 #define ENCODERS_PAD_A { encoder1a, encoder2a }
 #define ENCODERS_PAD_B { encoder1b, encoder2b }
 ```
-Further advanced options follows QMK's rules for encoders, refer to [QMK documentation](https://docs.qmk.fm/#/feature_encoders?id=encoders) in order to configure encoders fully.
 
-##### If working from an existing QMK firmware with working encoders this step can likely be skipped.
+更多高级选项遵循QMK对编码器的定义，请参考[QMK文档](https://docs.qmk.fm/#/feature_encoders?id=encoders)，以便全面配置编码器。
 
-## 2. Enable QMK Encoder Map
+##### 如果你已经拥有编码器正常工作的QMK固件，这一步可以跳过。
 
-Add this to the `rules.mk` file in the Vial keymap folder:
+## 2\.启用QMK编码器键位图
+
+把这些内容添加到Vial keymap文件夹中的`rules.mk`文件。
+
 ```make
 ENCODER_MAP_ENABLE = yes
 ```
-Add this to the `keymap.c` in the Vial keymap folder (example of two encoders, four layers):
+
+把这些内容添加到Vial keymap文件夹中的`keymap.c`文件中（两个编码器，四层的例子）。
+
 ```c
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
@@ -51,59 +56,68 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 };
 #endif
 ```
-**Important!** The encoder map needs to have the same number of layers as your main keymap.
 
-Refer to [QMK documentation](https://docs.qmk.fm/#/feature_encoders?id=encoder-map) for more details about the `ENCODER_MAP` feature.
+**重要!** 编码器键位图需要和你的主键盘键位图有相同的层数。
 
-### Notable differences in Vial from QMK
-- In Vial the layers are denoted by numbers only, and cannot be named. If working from an existing QMK keymap, these needs to be changed to reflect this. 
-- Encoder mapping ***replaces*** the older QMK style with encoder callbacks, these needs to be removed from the Vial `keymap.c` for your firmware to compile and work properly. They should however be left intact in the default keymap for backwards compatability with QMK.
+更多`ENCODER_MAP`相关细节请参考[QMK文档](https://docs.qmk.fm/#/feature_encoders?id=encoder-map)。
 
-### WARNING! 
-Do ***NOT*** edit the number '2' in this line:
+### Vial与QMK的明显区别
+
+- 在Vial中，层只用数字表示，不能被命名。如果从现有的QMK键位图工作，这些需要改变层命名。
+- 编码器键位图***取代了***旧的QMK风格的编码器回调，必须从Vial文件夹的`keymap.c`文件中删除对应内容，才能顺利编译出功能正常的固件。但是，在default文件夹中，相应内容必须保持原样，才能向后兼容QMK。
+
+### 警告!
+
+***不要***编辑这一行中的数字 "2"。
+
 ```c
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 ```
-It has ***nothing*** to do with the number of encoders, but denotes the two actions of the encoders, clockwise and counter clockwise rotation, and editing this makes the compilation fail.
 
-## 3. Add Vial encoders as part of KLE keymap
+它和编码器的数量***无关***，表示编码器的两个动作即顺时针和逆时针旋转，编辑它将导致编译失败。
 
-In Vial JSON an encoder is defined as either ***two or three*** 1u switches, with the labels representing the possible actions it can have (Clockwise/Counter Clockwise rotation). These lables are completely unique to the encoders, and are ***NOT*** part of the matrix.
+## 3\.添加Vial编码器作为KLE键位图的一部分
 
-**Not having both rotary switches defined makes the JSON invalid.**
+在Vial JSON中，编码器被定义为***2个或3个***1u开关，标签代表它可能的动作（顺时针/逆时针旋转）。这些标签是编码器专用的，***并不是***矩阵的一部分。
 
+**没有定义这两个旋转开关会使JSON无效。**
 
-**An encoder with no clickable button:**
+**一个没有可点击按钮的编码器。**
 
 ![](../img/encoders-kle.png)
 
-**An encoder with a clickable button:**
+**一个有可点击按钮的编码器。**
 
 ![](../img/encoders-kle2.png)
 
-**Dual encoders with buttons:**
+**带有按钮的双编码器。**
 
 ![](../img/dual-encoders-kle.png)
 
-**Multiple encoders combined with matrix:**
+**多个编码器与矩阵相结合。**
 
-Notice that in this example, the top row of switches marked red, are intended to be replaced by the encoders button action.
+请注意，在这个例子中，最上面一排标记为红色的按键，需要由编码器的按键来代替。
 
 ![](../img/multiple-encoders-kle.png)
 
-### Encoder Legends
-**Center legend**
-- The two switches for the CW and CCW rotary actions both have a center legend of `e`.
- 
-**Top Legend**
-- The top legend denotes the rotary index and action. **NOT the matrix position, or switch index.** This is separate from the matrix, and should not be confused with each other. `Encoder Index (0 ->), Rotary action (0 = CCW, 1 = CW)`
+### 编码器图例
 
-**Clickable button**
-- The bottom 1u switch represents the actual clickable button, and is usually part of the normal matrix, **having a normal index** of where it is placed in the matrix, **not related to the actual encoder**, this can also be shared with the normal key that it replaces physically.
+**中心图例**
 
+- 两个中心为`e`的按键分别对应顺时针和逆时针旋转。
 
-### KLE import
-Exporting the json from KLE will introduce the following lines to your file, these relate to the encoders (Example of two encoders):
+**顶部图例**
+
+- 顶部的数字表示旋钮索引和动作。**不是矩阵的位置，或按键的索引。**这与矩阵是分开的，不应相互混淆。`Encoder Index (0 ->), Rotary action (0 = CCW, 1 = CW)`
+
+**可点击的按钮**
+
+- 底部的1u按键代表实际的旋钮按键，通常是正常矩阵的一部分，**拥有一个正常的索引**，表示它在矩阵中的位置，**与实际的编码器无关**，可以替换成一颗正常的按键。
+
+### 导入KLE
+
+从KLE导出json，在你的文件中引入以下几行，它们与编码器有关（两个编码器的示例）。
+
 ```
   ["0,0\n\n\n\n\n\n\n\n\ne",
   "0,1\n\n\n\n\n\n\n\n\ne"],
@@ -111,13 +125,14 @@ Exporting the json from KLE will introduce the following lines to your file, the
   ["1,0\n\n\n\n\n\n\n\n\ne",
   "1,1\n\n\n\n\n\n\n\n\ne"],
 ```
-Enclose any associated x w h with double quotes `"`, as KLE json and vial json has slight differences in notation.
 
+用双引号`"`括住所有相关的x w h ，因为KLE json和vial json在符号上有轻微的差异。
 
-## Complete examples
+## 完整的例子
 
-### **9 Key macro pad example**
-Building a basic 9 key macro pad and a rotary encoder (without button) will produce the following. <sup>[(example KLE file)](http://www.keyboard-layout-editor.com/#/gists/f6c1df29df0d44744d9a4dafe26178ef)</sup>
+### **9键宏键盘示例**
+
+建立一个基本的9键宏键盘和一个旋转编码器（没有按钮），将产生以下内容。<sup>[(KLE文件示例)](http://www.keyboard-layout-editor.com/#/gists/f6c1df29df0d44744d9a4dafe26178ef)</sup>
 
 ![](../img/basic-91.png)
 
@@ -146,9 +161,10 @@ Building a basic 9 key macro pad and a rotary encoder (without button) will prod
 }
 
 ```
-### A macropad with 16 keys and 3 encoders
 
-[Example KLE file](http://www.keyboard-layout-editor.com/##@@=0,0&=0,1&=0,2&=0,3&_x:0.25%3B&=0,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&=0,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&_x:0.25%3B&=1,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&=1,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae%3B&@=1,0&=1,1&=1,2&=1,3&_x:0.75%3B&=0,4&_x:1.25%3B&=1,4%3B&@=2,0&=2,1&=2,2&=2,3%3B&@_y:-0.75&x:4.5%3B&=2,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&_w:1.75&h:1.75%3B&=2,4&=2,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae%3B&@_y:-0.25%3B&=3,0&=3,1&=3,2&=3,3)
+### 一个有16个键和3个编码器的宏键盘
+
+[KLE文件示例](http://www.keyboard-layout-editor.com/##@@=0,0&=0,1&=0,2&=0,3&_x:0.25%3B&=0,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&=0,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&_x:0.25%3B&=1,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&=1,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae%3B&@=1,0&=1,1&=1,2&=1,3&_x:0.75%3B&=0,4&_x:1.25%3B&=1,4%3B&@=2,0&=2,1&=2,2&=2,3%3B&@_y:-0.75&x:4.5%3B&=2,0%0A%0A%0A%0A%0A%0A%0A%0A%0Ae&_w:1.75&h:1.75%3B&=2,4&=2,1%0A%0A%0A%0A%0A%0A%0A%0A%0Ae%3B&@_y:-0.25%3B&=3,0&=3,1&=3,2&=3,3)
 
 ![](../img/bigmacro.png)
 
@@ -196,8 +212,9 @@ Building a basic 9 key macro pad and a rotary encoder (without button) will prod
     }
 }
 ```
-## Done!
 
-Compile and flash the firmware, and you should be able to configure encoders in the UI:
+## 完成!
+
+编译并烧录固件，你应该能够在用户界面中配置编码器。
 
 ![](../img/encoders-ui.png)

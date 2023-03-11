@@ -1,39 +1,44 @@
 ---
-layout: default
-title: Layers
-parent: User manual
-nav_order: 2
----
 
-# Layers
-Layers allow the ability to change the functionality of the entire keyboard based on what "layer" it's currently on. It's best to visualize layers stacked on top of each other. Most Vial devices have 4 layers but the firmware can be compiled to have less. Keys can be configured to switch between layers as needed similar to function keys on a laptop.
 
-You can view each layer available by clicking the coresponding number at the top of the interface. You can see we already have layer 0 selected.
+## layout: default  
+title: Layers  
+parent: User manual  
+nav\_order: 2
+
+# 层
+
+层允许根据当前所处的“层”来改变整个键盘的功能。最好的办法是将各层叠加在一起进行可视化。大多数Vial设备有4层，但固件可以只保留更少的层。可以根据需要对按键进行配置，以便在各层之间进行切换，类似于笔记本电脑上的功能键。
+
+你可以通过点击界面顶部相应的数字来查看每个可用的层。你可以看到我们已经选择了0层。
 
 ![](../img/layers-cycle.png)
 
-A typical layer setup would include a "base" layer and a "Function" layer. 
+一个典型的层设置将包括一个“基础”层和一个“功能”层。
 
-#### Base Layer
+#### 基础层
+
 ![](../img/layers-layer-1.png)
 
-#### Function Layer
+#### 功能层
+
 ![](../img/layers-layer-2.png)
 
-You can see additional key functionality is located on the "Function" layer. This is just convention, in realality you can do whatever you want with the layers.
+你可以看到额外的关键功能位于“功能”层上。这只是惯例，在现实中你可以对这些层做任何你想做的事情。
 
-# Moving Between Layers
-Switching between what layer is active can be done in a few ways. In the lower palette, select the **layer** tab to view all the different options. 
+# 在层之间移动
 
-- MO(layer)  - momentarily activates the layer. As soon as you let go of the key, the layer is deactivated.
-- DF(layer) - changes which layer is the default layer. This stays until the device loses power.
-- TG(layer) - toggles the layer, activating it if it's inactive and vice versa.
-- TT(layer) - If you hold the key down, the layer is activated, and then is de-activated when you let go (like MO). If you repeatedly tap it, the layer will be toggled on or off (like TG). It needs 5 taps to do this.
-- OSL(layer) - momentarily activates the layer until the next key is pressed.
-- LT layer (kc) - momentarily activates the layer when it is held, sends a keycode when pressed. The keycode can be defined like all the other buttons, Just select the smaller box inside.
+切换活动层可以通过几种方式进行。在下面的面板中，选择**图层**标签来查看所有不同的选项。
 
+- MO(layer)可以瞬间激活该层。一旦你松开这个键，该层就被停用了。
+- DF(layer)设置该层为默认层。这将保持到设备断电。
+- TG(layer) 切换图层，如果它尚未激活就激活它，反之亦然。
+- Tt(layer) 当你按住这个键的时候，该层被激活，然后在你松手时停用（像MO）。如果你反复点击它，该层将被打开或关闭（像TG）。需要敲击5次才能做到这一点。
+- OSL(layer)瞬间激活该层，直到按下下一个键。
+- LT layer(kc)当它被按住时瞬间激活该层，按下时发送一个键码。键码可以像其他所有的按钮一样被定义，只要选择里面的小方框即可。
 
-# Additional Information on Layers
+# 关于图层的其他信息
 
-### Transparency
-The Triangle symbols represent Transparency. Those mean the action is the same as the layer below it. This is useful so that keys from different layers can be pressed at the same time. 
+### 透明
+
+三角形符号代表透明。意味着在这一层的操作与它下面的层是一样的。这样就可以同时按下属于不同层的按键，因此很实用。

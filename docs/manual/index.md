@@ -1,8 +1,8 @@
 ---
-layout: default
-title: User manual
-nav_order: 2
-has_children: true
-redirect_from:
-  - /gettingStarted/
+
+
+layout: default title: User manual nav\_order: 2 has\_children: true redirect\_from:
+
+- /gettingStarted/
+
 ---

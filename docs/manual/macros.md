@@ -1,59 +1,67 @@
 ---
-layout: default
-title: Macros
-parent: User manual
-nav_order: 3
----
 
-# Macros
 
-Macros can be used to perform a pre-programmed sequence of actions or steps. 
+## layout: default  
+title: Macros  
+parent: User manual  
+nav\_order: 3
 
-By default, 16 macros can be configured. This number can be lower as some firmwares do not have enough space for this many macros. 
+# 宏
 
-Some great example uses for macros could be typing out and address, opening a program with a hotkey-shortcut or filling out a form.
+宏可以用来执行预先编辑好的一系列动作或步骤。
 
-## 1. Configure Macros
-Click the **Macros** tab. All the macros that can be configured will be displayed as seperate tabs. Select a Macro you would like to configure. In the picture below **M0** is selected
+默认情况下，可以配置16个宏。这个数字可以降低，因为有些固件没有足够的空间容纳这么多的宏。
+
+宏的一些典型用途可以是打出地址，用热键快捷键打开程序或填写表格。
+
+## 1\.配置宏
+
+单击“**宏**”的选项卡。所有可以配置的宏都将显示为独立的标签。选择一个你想配置的宏。在下图中，我们选中了**M0**。
 
 ![](../img/macros-header1.png)
 
-The next step is to add actions. In the bottom right corner, you can 
-* **Add action** - Manually adds an action to the list. Configure it to do exactly what you want. select from different options - hold, tap, release, and delay.
-* **Tap Enter** - Lots of macros end with an "Enter" key so this button makes it easier to add that.
-* **Record macro** - Lets you record the macro directly from your keyboard. It's not the most reliable but it's a great place to start.
+下一步是添加动作。在右下角，你可以
 
-Use these buttons to add actions to the list. These will be perfomed in order when the macro is activated.
+* **添加动作** - 添加一个动作到列表中。配置它来做你想做的事。从不同的选项中选择按住、按下、释放和延迟。
+* **按下回车键** - 很多宏都以“回车”键结束，所以这个按钮让你更容易添加回车键。
+* **录制宏** - 让你直接从你的键盘上录制宏。它不是最可靠的，但它可以提供一个很好的基础。
 
-Actions can be reordered using the arrows on the left. 
+使用这些按钮来添加动作到列表中。当宏被激活时，这些动作将被按顺序执行。
 
-When you are satisfied with the configuration of all macros, click **save** to save all changes. If you want to revert to what is already on the device, click **revert**
+可以用左边的箭头对动作进行重新排序。
 
-### Examples
-1. Opens Task Manager on Windows by pressing Ctrl+Shift and then tapping Esc
+当您对所有宏的配置感到满意时，请点击保存**以**保存所有更改。如果你想恢复到设备上已有的配置，点击**恢复。**
 
-    ![](../img/macro-task-manager.png)
+### 例子
 
-2. Launch a program on Windows by opening the Start Menu, typing out the program name, and pressing Enter.
+1. 在Windows上按Ctrl+Shift，然后点Esc，打开任务管理器
+   
+   ![](../img/macro-task-manager.png)
 
-    ![](../img/macro-launch-vs-code.png)
+2. 通过打开“开始”菜单，输入程序名称，然后按回车键，在Windows上启动一个程序。
+   
+   ![](../img/macro-launch-vs-code.png)
 
-3. Type out a street address
+3. 键入一个街道地址
+   
+   ![](../img/macro-street-address.png)
 
-    ![](../img/macro-street-address.png)
+## 2\.使用宏
 
-## 2. Using Macros
-After the macro has been configured, it can be used. Just click on a key you would like to use for a macro in the top palette then select your macro in the bottom palette. (under the macro tab)
+配置好宏后，就可以使用了。只需在顶部面板上点击你想用于宏的一个键，然后在底部面板上选择你的宏。(在宏标签下)
 
 ![](../img/macro-overview.png)
 
-## 3. Changing the amount of Macros
+## 3\.改变宏的数量
 
-To increase or decrease the amount of macros you need to define it in your `keymaps/vial/config.h`, where 'xx' is the amount macros you want.
+要增加或减少宏的数量，你需要在你的`keymaps/vial/config.h`中定义。其中'xx'是你想要的宏的数量。
+
 ```
 #define DYNAMIC_KEYMAP_MACRO_COUNT xx
 ```
-Up to 109 is possible, the amount of macros will not change how much space is reserved for macros but every every blank entry will consume one byte in your EEPROM.
 
-# More info
-Macros is a QMK feature and more detailed information can be found with the [offical QMK documenation](https://docs.qmk.fm/#/feature_macros).
+最多可以有109个宏，宏的数量不会改变为宏保留的空间，但每一个空白条目都会消耗你的EEPROM中的一个字节。
+
+# 更多信息
+
+宏是QMK的一项功能，更多的详细信息可以在[QMK官方文档](https://docs.qmk.fm/#/feature_macros)中找到。
